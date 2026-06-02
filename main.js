@@ -196,10 +196,14 @@ function animate() {
 }
 
 function resize() {
-  const width = window.innerWidth;
-  const height = window.innerHeight;
+  const width = Math.floor(window.innerWidth);
+  const height = Math.floor(window.innerHeight);
 
-  renderer.setSize(width, height);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(width, height, false);
+
+  canvas.style.width = `${width}px`;
+  canvas.style.height = `${height}px`;
 }
 
 async function enterExperience() {
@@ -207,6 +211,9 @@ async function enterExperience() {
 
   startScreen.style.display = "none";
   exitButton.style.display = "inline-flex";
+
+  // Redimensiona imediatamente após esconder a tela inicial.
+  resize();
 
   const element = document.documentElement;
 
@@ -219,6 +226,11 @@ async function enterExperience() {
       setDebug("Tela cheia bloqueada, mas visualização iniciada.");
     }
   }
+
+  resize();
+  setTimeout(resize, 100);
+  setTimeout(resize, 300);
+  setTimeout(resize, 700);
 }
 
 async function exitExperience() {
@@ -237,14 +249,25 @@ async function exitExperience() {
 }
 
 window.addEventListener("resize", resize);
+window.addEventListener("orientationchange", () => {
+  setTimeout(resize, 100);
+  setTimeout(resize, 400);
+});
+
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", resize);
+}
 
 startButton.addEventListener("click", enterExperience);
 exitButton.addEventListener("click", exitExperience);
 
 document.addEventListener("fullscreenchange", () => {
+  resize();
+
   if (!document.fullscreenElement && startScreen.style.display === "none") {
     exitButton.style.display = "inline-flex";
   }
 });
 
+resize();
 animate();
