@@ -63,12 +63,11 @@ loader.load(
 
   (gltf) => {
     setDebug("Modelo carregado com sucesso.");
-  
+
     model = gltf.scene;
+
     normalizeModel(model);
-  
-    model.rotation.x = Math.PI;
-  
+
     group.add(model);
   },
 
@@ -109,6 +108,8 @@ function renderHologramViews() {
 
   renderer.clear();
 
+  // Mantém cada viewport com proporção quadrada.
+  // Isso evita o efeito de modelo repuxado/deformado.
   camera.aspect = 1;
   camera.updateProjectionMatrix();
 
@@ -133,25 +134,25 @@ function renderHologramViews() {
       name: "top",
       col: 1,
       row: 0,
-      rotationZ: Math.PI
+      rotationZ: 0
     },
     {
       name: "left",
       col: 0,
       row: 1,
-      rotationZ: -Math.PI / 2
+      rotationZ: Math.PI / 2
     },
     {
       name: "right",
       col: 2,
       row: 1,
-      rotationZ: Math.PI / 2
+      rotationZ: -Math.PI / 2
     },
     {
       name: "bottom",
       col: 1,
       row: 2,
-      rotationZ: 0
+      rotationZ: Math.PI
     }
   ];
 
@@ -196,14 +197,10 @@ function animate() {
 }
 
 function resize() {
-  const width = Math.floor(window.innerWidth);
-  const height = Math.floor(window.innerHeight);
+  const width = window.innerWidth;
+  const height = window.innerHeight;
 
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(width, height, false);
-
-  canvas.style.width = `${width}px`;
-  canvas.style.height = `${height}px`;
+  renderer.setSize(width, height);
 }
 
 async function enterExperience() {
@@ -211,9 +208,6 @@ async function enterExperience() {
 
   startScreen.style.display = "none";
   exitButton.style.display = "inline-flex";
-
-  // Redimensiona imediatamente após esconder a tela inicial.
-  resize();
 
   const element = document.documentElement;
 
@@ -226,11 +220,6 @@ async function enterExperience() {
       setDebug("Tela cheia bloqueada, mas visualização iniciada.");
     }
   }
-
-  resize();
-  setTimeout(resize, 100);
-  setTimeout(resize, 300);
-  setTimeout(resize, 700);
 }
 
 async function exitExperience() {
@@ -249,25 +238,14 @@ async function exitExperience() {
 }
 
 window.addEventListener("resize", resize);
-window.addEventListener("orientationchange", () => {
-  setTimeout(resize, 100);
-  setTimeout(resize, 400);
-});
-
-if (window.visualViewport) {
-  window.visualViewport.addEventListener("resize", resize);
-}
 
 startButton.addEventListener("click", enterExperience);
 exitButton.addEventListener("click", exitExperience);
 
 document.addEventListener("fullscreenchange", () => {
-  resize();
-
   if (!document.fullscreenElement && startScreen.style.display === "none") {
     exitButton.style.display = "inline-flex";
   }
 });
 
-resize();
 animate();
