@@ -63,10 +63,14 @@ loader.load(
 
   (gltf) => {
     setDebug("Modelo carregado com sucesso.");
-
+  
     model = gltf.scene;
     normalizeModel(model);
+  
+    model.rotation.x = Math.PI;
+  
     group.add(model);
+  },
   },
 
   (progress) => {
