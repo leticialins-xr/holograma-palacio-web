@@ -71,7 +71,6 @@ loader.load(
   
     group.add(model);
   },
-  },
 
   (progress) => {
     if (progress.total > 0) {
