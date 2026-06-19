@@ -56,10 +56,10 @@ const clock = new THREE.Clock();
 
 const loader = new GLTFLoader();
 
-setDebug("Tentando carregar: ./assets/castle.glb");
+setDebug("Tentando carregar: ./assets/Mobile300kPalacio.glb");
 
 loader.load(
-  "./assets/castle.glb",
+  "./assets/Mobile300kPalacio.glb",
 
   (gltf) => {
     setDebug("Modelo carregado com sucesso.");
@@ -80,7 +80,7 @@ loader.load(
 
   (error) => {
     console.error("Erro ao carregar modelo:", error);
-    setDebug("Erro ao carregar castle.glb. Verifique o nome e a pasta assets.");
+    setDebug("Erro ao carregar Mobile300kPalacio.glb. Verifique o nome e a pasta assets.");
   }
 );
 
